@@ -9,6 +9,8 @@ export const gameRouter = createTRPCRouter({
       page: z.number().min(1).default(1),
       limit: z.number().min(1).max(100).default(10),
       search: z.string().optional(),
+      sortColumn: z.string().optional(),
+      sortOrder: z.enum(["asc", "desc"]).optional(),
     }))
     .query(async ({ input }) => {
       return gameService.listGames(input);
@@ -50,6 +52,8 @@ export const gameRouter = createTRPCRouter({
       endYear: z.number().int().min(1970),
       page: z.number().min(1).default(1),
       limit: z.number().min(1).max(100).default(10),
+      sortColumn: z.string().optional(),
+      sortOrder: z.enum(["asc", "desc"]).optional(),
     }))
     .query(async ({ input }) => {
       return gameService.listGamesByGenreAndPeriod(input);

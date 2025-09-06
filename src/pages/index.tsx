@@ -17,6 +17,8 @@ export default function Home() {
   const [pageSize, setPageSize] = useState(10);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'allGames' | 'yearStats' | 'logs'>('allGames');
+  const [sortColumn, setSortColumn] = useState('releaseDate');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
   const utils = api.useUtils();
 
@@ -25,6 +27,8 @@ export default function Home() {
     page,
     limit: pageSize,
     search: search || undefined,
+    sortColumn,
+    sortOrder,
   });
 
   const addGameMutation = api.game.add.useMutation({
@@ -81,7 +85,13 @@ export default function Home() {
           <div className="w-full max-w-4xl">
             {activeTab === 'allGames' && (
               <>
-                <GameListHeader onAddGame={() => setIsModalOpen(true)} />
+                <GameListHeader
+                  onAddGame={() => setIsModalOpen(true)}
+                  sortColumn={sortColumn}
+                  sortOrder={sortOrder}
+                  onSortColumnChange={setSortColumn}
+                  onSortOrderChange={setSortOrder}
+                />
                 <GameSearch value={search} onChange={setSearch} />
                 <GameList
                   games={games}
