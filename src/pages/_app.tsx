@@ -1,5 +1,3 @@
-import { type Session } from "next-auth";
-import { SessionProvider } from "next-auth/react";
 import { type AppType } from "next/app";
 import { Toaster } from "react-hot-toast";
 import { Geist } from "next/font/google";
@@ -13,19 +11,14 @@ const geist = Geist({
   subsets: ["latin"],
 });
 
-const MyApp: AppType<{ session: Session | null }> = ({
-  Component,
-  pageProps: { session, ...pageProps },
-}) => {
+const MyApp: AppType = ({ Component, pageProps }) => {
   return (
-    <SessionProvider session={session}>
-      <AppProvider>
-        <Toaster position="bottom-center" />
-        <div className={geist.className}>
-          <Component {...pageProps} />
-        </div>
-      </AppProvider>
-    </SessionProvider>
+    <AppProvider>
+      <Toaster position="bottom-center" />
+      <div className={geist.className}>
+        <Component {...pageProps} />
+      </div>
+    </AppProvider>
   );
 };
 

@@ -7,13 +7,11 @@
  * need to use are documented accordingly near the end.
  */
 
-import { initTRPC, TRPCError } from "@trpc/server";
+import { initTRPC } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
-import { type Session } from "next-auth";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
-import { auth } from "~/features/auth/services";
 import { db } from "~/server/db";
 import { log } from "~/server/logger";
 
@@ -26,7 +24,7 @@ import { log } from "~/server/logger";
  */
 
 interface CreateContextOptions {
-  session: Session | null;
+  // session: Session | null;
 }
 
 /**
@@ -41,7 +39,6 @@ interface CreateContextOptions {
  */
 const createInnerTRPCContext = (opts: CreateContextOptions) => {
   return {
-    session: opts.session,
     db,
   };
 };
@@ -52,11 +49,10 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
  *
  * @see https://trpc.io/docs/context
  */
+
 export const createTRPCContext = async (opts: CreateNextContextOptions) => {
-  // Temporarily disable NextAuth: no session
-  return createInnerTRPCContext({
-    session: null,
-  });
+  // No session context
+  return createInnerTRPCContext({});
 };
 
 /**

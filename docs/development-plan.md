@@ -8,7 +8,7 @@
   - **Prisma** (ORM for MongoDB)
   - **TailwindCSS** (UI, even if minimal)
   - **Zod** (validation)
-  - **(Optional) NextAuth** (for authentication/role system if time allows)
+  - **(Optional) Authentication/role system** (if time allows)
 
 ## 2. **Prisma & MongoDB Schema**
 - Configure Prisma to use MongoDB (update `schema.prisma` datasource).
@@ -65,7 +65,7 @@
 
 ## 7. **Optional Features (Time Permitting)**
 - **Filtering & Sorting:** Add query params for genre, platform, release year, etc.
-- **Authentication/Role System:** Use NextAuth, restrict endpoints based on roles.
+**Authentication/Role System:** Add if time allows, restrict endpoints based on roles.
 - **Testing:** Add unit tests for API endpoints (tRPC).
 - **Frontend Improvements:** Better UI/UX with Tailwind and table features.
 

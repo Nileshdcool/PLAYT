@@ -21,7 +21,6 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@auth/prisma-adapter": "^2.7.2",
     "@faker-js/faker": "^10.0.0",
     "@prisma/client": "^6.15.0",
     "@t3-oss/env-nextjs": "^0.12.0",
@@ -32,7 +31,6 @@
     "@trpc/server": "^11.0.0",
     "chance": "^1.1.13",
     "next": "^15.2.3",
-    "next-auth": "5.0.0-beta.25",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.6.0",
