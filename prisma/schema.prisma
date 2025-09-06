@@ -1,0 +1,22 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mongodb"
+    url      = env("MONGODB_URI")
+}
+
+model Game {
+    id           String   @id @default(auto()) @map("_id") @db.ObjectId
+    title        String
+    genre        String
+    platform     String
+    releaseDate  DateTime
+    developer    String
+    price        Float
+    multiplayer  Boolean
+    metascore    Int
+    @@index([releaseDate])
+    @@index([genre])
+}

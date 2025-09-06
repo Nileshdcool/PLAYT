@@ -1,0 +1,134 @@
+import Head from "next/head";
+import { api } from "~/utils/api";
+import GameListHeader from "../components/GameList/GameListHeader";
+import GameList from "../components/GameList/GameList";
+import GameSearch from "../components/GameList/GameSearch";
+import AddGameModal from "../components/GameList/AddGameModal";
+import ReleaseYearStatsView from "../components/ReleaseYearStatsView/ReleaseYearStatsView";
+
+import { useState } from "react";
+import GrafanaEmbed from "../components/GrafanaEmbed";
+import GamePagination from "../components/GameList/GamePagination";
+import { toast } from "react-hot-toast";
+
+export default function Home() {
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<'allGames' | 'yearStats' | 'logs'>('allGames');
+
+  const utils = api.useUtils();
+
+  // Fetch game list from tRPC with pagination and search
+  const { data, isLoading, error } = api.game.list.useQuery({
+    page,
+    limit: pageSize,
+    search: search || undefined,
+  });
+
+  const addGameMutation = api.game.add.useMutation({
+    onSuccess: () => {
+      // Invalidate the game list query to refetch data
+      utils.game.list.invalidate();
+      setIsModalOpen(false);
+      toast.success("Game added successfully!");
+    },
+    onError: (error) => {
+      toast.error(`Error adding game: ${error.message}`);
+    },
+  });
+
+  const handleAddGame = (game: any) => {
+    addGameMutation.mutate(game);
+  };
+
+  // Prepare games with releaseDate as string
+  const games = (data?.games ?? []).map((game) => ({
+    ...game,
+    releaseDate:
+      typeof game.releaseDate === "string"
+        ? game.releaseDate
+        : game.releaseDate?.toISOString?.() ?? ""
+  }));
+
+  const showPagination = !search;
+
+  return (
+    <>
+      <Head>
+        <title>Game Dashboard</title>
+        <meta name="description" content="Game list and stats app" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
+        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
+          <div className="flex justify-center w-full border-b border-gray-600">
+            <button
+              className={`px-6 py-3 text-lg font-medium transition-colors duration-300 ${activeTab === 'allGames' ? 'border-b-2 border-purple-500 text-white' : 'text-gray-400 hover:text-white'}`}
+              onClick={() => setActiveTab('allGames')}
+            >All Games</button>
+            <button
+              className={`px-6 py-3 text-lg font-medium transition-colors duration-300 ${activeTab === 'yearStats' ? 'border-b-2 border-purple-500 text-white' : 'text-gray-400 hover:text-white'}`}
+              onClick={() => setActiveTab('yearStats')}
+            >Release Year Stats</button>
+            <button
+              className={`px-6 py-3 text-lg font-medium transition-colors duration-300 ${activeTab === 'logs' ? 'border-b-2 border-purple-500 text-white' : 'text-gray-400 hover:text-white'}`}
+              onClick={() => setActiveTab('logs')}
+            >Logs</button>
+          </div>
+
+          <div className="w-full max-w-4xl">
+            {activeTab === 'allGames' && (
+              <>
+                <GameListHeader onAddGame={() => setIsModalOpen(true)} />
+                <GameSearch value={search} onChange={setSearch} />
+                <GameList
+                  games={games}
+                  isLoading={isLoading}
+                  error={error}
+                />
+                <div className="flex flex-row items-center justify-between w-full mt-8 px-4 py-3 bg-white/10 rounded-lg shadow">
+                  <div className="flex items-center gap-2">
+                    <label className="font-medium mr-2">Page Size:</label>
+                    <select
+                      className="rounded p-2 text-black bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      value={pageSize}
+                      onChange={e => { setPageSize(Number(e.target.value)); setPage(1); }}
+                    >
+                      {[5, 10, 20, 50].map(size => (
+                        <option key={size} value={size}>{size}</option>
+                      ))}
+                    </select>
+                  </div>
+                  {showPagination && (
+                    <div className="flex items-center">
+                      <GamePagination
+                        page={data?.page ?? 1}
+                        totalPages={data?.totalPages ?? 1}
+                        onPageChange={setPage}
+                      />
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+            {activeTab === 'yearStats' && <ReleaseYearStatsView />}
+            {activeTab === 'logs' && (
+              <GrafanaEmbed
+                dashboardUrl="http://localhost:3001/explore?orgId=1&left=%7B%22datasource%22%3A%22Loki%22%2C%22expr%22%3A%22%7Bjob%3D%5C%22app%5C%22%7D%22%7D"
+                width="100%"
+                height="800px"
+              />
+            )}
+          </div>
+        </div>
+        <AddGameModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onAddGame={handleAddGame}
+        />
+      </main>
+    </>
+  );
+}
