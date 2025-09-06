@@ -1,5 +1,5 @@
 import React from "react";
-import type { Game, GameListProps } from "../../types/game";
+import type { Game, GameListProps } from "../types/game";
 
 const GameList: React.FC<GameListProps> = ({ games, isLoading, error }) => {
   return (

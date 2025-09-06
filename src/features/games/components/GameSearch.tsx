@@ -1,5 +1,5 @@
 import React from "react";
-import type { GameSearchProps } from "../../types/game";
+import type { GameSearchProps } from "../types/game";
 
 const GameSearch: React.FC<GameSearchProps> = ({ value, onChange }) => {
   return (

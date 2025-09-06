@@ -1,14 +1,14 @@
 import Head from "next/head";
 import { api } from "~/utils/api";
-import GameListHeader from "../components/GameList/GameListHeader";
-import GameList from "../components/GameList/GameList";
-import GameSearch from "../components/GameList/GameSearch";
-import AddGameModal from "../components/GameList/AddGameModal";
-import ReleaseYearStatsView from "../components/ReleaseYearStatsView/ReleaseYearStatsView";
+import GameListHeader from "../features/games/components/GameListHeader";
+import GameList from "../features/games/components/GameList";
+import GameSearch from "../features/games/components/GameSearch";
+import AddGameModal from "../features/games/components/AddGameModal";
+import ReleaseYearStatsView from "../features/games/components/ReleaseYearStatsView";
 
 import { useState } from "react";
 import GrafanaEmbed from "../components/GrafanaEmbed";
-import GamePagination from "../components/GameList/GamePagination";
+import GamePagination from "../features/games/components/GamePagination";
 import { toast } from "react-hot-toast";
 
 export default function Home() {

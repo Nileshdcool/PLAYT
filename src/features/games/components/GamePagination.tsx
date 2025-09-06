@@ -1,5 +1,5 @@
 import React from "react";
-import type { GamePaginationProps } from "../../types/game";
+import type { GamePaginationProps } from "../types/game";
 
 const GamePagination: React.FC<GamePaginationProps> = ({ page, totalPages, onPageChange }) => {
   if (totalPages <= 1) return null;

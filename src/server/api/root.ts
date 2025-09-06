@@ -1,6 +1,6 @@
 
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
-import { gameRouter } from "./routers/game";
+import { gameRouter } from "../../features/games/api/game";
 
 export const appRouter = createTRPCRouter({
   game: gameRouter,
