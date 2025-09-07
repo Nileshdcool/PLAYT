@@ -49,6 +49,13 @@ export const api = createTRPCNext<AppRouter>({
           },
         }),
       ],
+      queryClientConfig: {
+        defaultOptions: {
+          queries: {
+            retry: 0 // disables retries globally
+          }
+        }
+      },
     };
   },
   /**
