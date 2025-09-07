@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { api } from "~/utils/api";
 import GrafanaEmbed from "../components/GrafanaEmbed";
+import GameListControls from "../features/games/components/GameListControls";
 import GamePagination from "../features/games/components/GamePagination";
 import GameListHeader from "../features/games/components/GameListHeader";
 import GameList from "../features/games/components/GameList";
@@ -112,29 +113,14 @@ export default function Home() {
                   isLoading={isLoading}
                   error={error}
                 />
-                <div className="flex flex-row items-center justify-between w-full mt-8 px-4 py-3 bg-white/10 rounded-lg shadow">
-                  <div className="flex items-center gap-2">
-                    <label className="font-medium mr-2">Page Size:</label>
-                    <select
-                      className="rounded p-2 text-black bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                      value={pageSize}
-                      onChange={e => { setPageSize(Number(e.target.value)); setPage(1); }}
-                    >
-                      {[5, 10, 20, 50].map(size => (
-                        <option key={size} value={size}>{size}</option>
-                      ))}
-                    </select>
-                  </div>
-                  {showPagination && (
-                    <div className="flex items-center">
-                      <GamePagination
-                        page={data?.page ?? 1}
-                        totalPages={data?.totalPages ?? 1}
-                        onPageChange={setPage}
-                      />
-                    </div>
-                  )}
-                </div>
+                <GameListControls
+                  pageSize={pageSize}
+                  onPageSizeChange={(size: number) => { setPageSize(size); setPage(1); }}
+                  showPagination={showPagination}
+                  page={data?.page ?? 1}
+                  totalPages={data?.totalPages ?? 1}
+                  onPageChange={setPage}
+                />
               </>
             )}
             {activeTab === 'yearStats' && <ReleaseYearStatsView />}

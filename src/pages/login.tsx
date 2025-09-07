@@ -1,6 +1,7 @@
 import { signIn, useSession, getSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { setApiToken } from "../utils/api";
+import TextInput from "../components/TextInput";
 import { useRouter } from "next/router";
 
 export default function LoginPage() {
@@ -47,27 +48,21 @@ export default function LoginPage() {
       <div className="bg-white/10 rounded-lg shadow-lg p-8 w-full max-w-sm">
         <h2 className="text-2xl font-bold mb-6 text-center text-white">Login</h2>
         <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label className="block text-sm font-medium mb-2 text-white">Username</label>
-            <input
-              className="w-full px-4 py-2 rounded bg-white text-black border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
-              value={username}
-              onChange={e => setUsername(e.target.value)}
-              required
-              placeholder="Enter your username"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-2 text-white">Password</label>
-            <input
-              type="password"
-              className="w-full px-4 py-2 rounded bg-white text-black border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              required
-              placeholder="Enter your password"
-            />
-          </div>
+          <TextInput
+            label="Username"
+            value={username}
+            onChange={setUsername}
+            required
+            placeholder="Enter your username"
+          />
+          <TextInput
+            label="Password"
+            type="password"
+            value={password}
+            onChange={setPassword}
+            required
+            placeholder="Enter your password"
+          />
           {error && <div className="text-red-500 text-sm text-center">{error}</div>}
           <button
             type="submit"

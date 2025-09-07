@@ -1,5 +1,6 @@
 import React from "react";
 import type { Game, GameListProps } from "../types/game";
+import GameListItem from "./GameListItem";
 
 const GameList: React.FC<GameListProps> = ({ games, isLoading, error }) => {
   return (
@@ -20,16 +21,7 @@ const GameList: React.FC<GameListProps> = ({ games, isLoading, error }) => {
       {games.length > 0 && (
         <ul className="divide-y divide-white/20">
           {games.map((game) => (
-            <li key={game.id} className="py-4">
-              <div className="flex flex-col">
-                <span className="text-lg font-semibold text-white">{game.title}</span>
-                <span className="text-sm text-white/80">Genre: {game.genre} | Platform: {game.platform}</span>
-                <span className="text-sm text-white/80">Release: {game.releaseDate.slice(0, 10)}</span>
-                <span className="text-sm text-white/80">Developer: {game.developer}</span>
-                <span className="text-sm text-white/80">Price: ${game.price.toFixed(2)} | Metascore: {game.metascore}</span>
-                <span className="text-sm text-white/80">Multiplayer: {game.multiplayer ? "Yes" : "No"}</span>
-              </div>
-            </li>
+            <GameListItem key={game.id} game={game} />
           ))}
         </ul>
       )}
