@@ -36,6 +36,8 @@ export const gameRouter = createTRPCRouter({
     .input(z.object({
       startYear: z.number().int().min(1970),
       endYear: z.number().int().min(1970),
+      sortColumn: z.string().optional(),
+      sortOrder: z.enum(["asc", "desc"]).optional(),
     }))
     .query(async ({ input }) => {
       return gameService.getReleaseYearStats(input);

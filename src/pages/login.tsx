@@ -1,8 +1,10 @@
 import { signIn, useSession, getSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { setApiToken } from "../utils/api";
-import TextInput from "../components/TextInput";
 import { useRouter } from "next/router";
+import LoginHeader from "../features/auth/components/LoginHeader";
+import LoginForm from "../features/auth/components/LoginForm";
+import LoginBackground from "../features/auth/components/LoginBackground";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -50,74 +52,18 @@ export default function LoginPage() {
         <meta name="description" content="Login to PLAYTASTIC" />
         <link rel="icon" href="/playtastic-logo.svg" />
       </head>
-      {/* Sporty animated background */}
       <div className="relative flex items-center justify-center min-h-screen bg-gradient-to-b from-[#2e026d] to-[#15162c] overflow-hidden">
-        {/* Dynamic background shapes for sporty look */}
-        <div className="absolute inset-0 pointer-events-none z-0">
-          {/* Animated circles and lines for energy */}
-          <div className="animate-pulse-slow absolute top-1/4 left-1/3 w-32 h-32 bg-purple-700 opacity-30 rounded-full blur-2xl" />
-          <div className="animate-pulse-fast absolute bottom-1/4 right-1/4 w-24 h-24 bg-pink-500 opacity-20 rounded-full blur-2xl" />
-          <div className="animate-spin-slow absolute top-1/2 left-1/2 w-16 h-16 border-4 border-yellow-400 border-dashed rounded-full opacity-30" />
-          {/* Sporty accent: diagonal lines */}
-          <div className="absolute top-0 left-0 w-2/3 h-2 rotate-12 bg-gradient-to-r from-yellow-400 to-pink-500 opacity-30 animate-slide" />
-          <div className="absolute bottom-0 right-0 w-1/2 h-2 -rotate-12 bg-gradient-to-r from-pink-500 to-purple-700 opacity-30 animate-slide-reverse" />
-          {/* Animated sporty cars SVGs */}
-          <div className="absolute left-0 bottom-10 w-32 h-16 animate-car-left">
-            <svg viewBox="0 0 128 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="20" y="30" width="80" height="20" rx="10" fill="#f472b6" />
-              <rect x="40" y="20" width="40" height="20" rx="8" fill="#a855f7" />
-              <circle cx="35" cy="55" r="8" fill="#facc15" stroke="#222" strokeWidth="3" />
-              <circle cx="93" cy="55" r="8" fill="#facc15" stroke="#222" strokeWidth="3" />
-              <rect x="60" y="35" width="8" height="8" rx="2" fill="#fff" />
-            </svg>
-          </div>
-          <div className="absolute right-0 top-16 w-28 h-14 animate-car-right">
-            <svg viewBox="0 0 112 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="16" y="26" width="64" height="16" rx="8" fill="#facc15" />
-              <rect x="32" y="16" width="32" height="16" rx="6" fill="#a855f7" />
-              <circle cx="28" cy="46" r="7" fill="#f472b6" stroke="#222" strokeWidth="3" />
-              <circle cx="76" cy="46" r="7" fill="#f472b6" stroke="#222" strokeWidth="3" />
-              <rect x="48" y="30" width="7" height="7" rx="2" fill="#fff" />
-            </svg>
-          </div>
-        </div>
-        {/* Animated glowing border for the login box */}
+        <LoginBackground />
         <div className="relative z-10 bg-white/10 rounded-lg shadow-lg p-8 w-full max-w-sm flex flex-col items-center border-2 border-purple-600 animate-glow">
-          {/* Sporty trophy icon */}
-          <span className="mb-2 animate-trophy">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" className="mx-auto">
-              <path d="M12 2C13.1046 2 14 2.89543 14 4V5H19C19.5523 5 20 5.44772 20 6V8C20 10.7614 17.3137 13 14 13H10C6.68629 13 4 10.7614 4 8V6C4 5.44772 4.44772 5 5 5H10V4C10 2.89543 10.8954 2 12 2Z" fill="#facc15"/>
-              <rect x="9" y="15" width="6" height="2" rx="1" fill="#a855f7"/>
-              <rect x="10" y="17" width="4" height="2" rx="1" fill="#f472b6"/>
-            </svg>
-          </span>
-          <img src="/playtastic-logo.svg" alt="PLAYTASTIC Logo" className="h-16 w-16 mb-3 animate-bounce" />
-          <h1 className="text-3xl font-extrabold mb-2 text-center text-white animate-fade-in">PLAYTASTIC</h1>
-          <h2 className="text-2xl font-bold mb-6 text-center text-white animate-fade-in delay-200">Login</h2>
-          <form onSubmit={handleSubmit} className="space-y-5 w-full">
-            <TextInput
-              label="Username"
-              value={username}
-              onChange={setUsername}
-              required
-              placeholder="Enter your username"
-            />
-            <TextInput
-              label="Password"
-              type="password"
-              value={password}
-              onChange={setPassword}
-              required
-              placeholder="Enter your password"
-            />
-            {error && <div className="text-red-500 text-sm text-center">{error}</div>}
-            <button
-              type="submit"
-              className="w-full py-2 px-4 bg-yellow-400 hover:bg-yellow-500 text-purple-900 font-semibold rounded transition-colors animate-button-pop border-2 border-purple-600 shadow-md"
-            >
-              Login
-            </button>
-          </form>
+          <LoginHeader />
+          <LoginForm
+            username={username}
+            password={password}
+            error={error}
+            setUsername={setUsername}
+            setPassword={setPassword}
+            handleSubmit={handleSubmit}
+          />
         </div>
         {/* Add custom keyframes for animation effects */}
         <style jsx>{`

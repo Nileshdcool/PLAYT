@@ -9,10 +9,11 @@ const ReleaseYearStatsView = () => {
   const [expandedGenre, setExpandedGenre] = useState<string | null>(null);
   const [drillPage, setDrillPage] = useState(1);
   const [drillPageSize, setDrillPageSize] = useState(10);
+  const [sortColumn, setSortColumn] = useState<string>('genre');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
-  const { data, isLoading, error, refetch } = api.game.releaseYearStats.useQuery(
-    { startYear, endYear },
-    { enabled: false }
+  const { data, isLoading, error } = api.game.releaseYearStats.useQuery(
+    { startYear, endYear, sortColumn, sortOrder }
   );
 
   // Drill-down query for games by genre and period
@@ -29,7 +30,7 @@ const ReleaseYearStatsView = () => {
 
   const handleFetchStats = () => {
     setExpandedGenre(null);
-    refetch();
+    // No need to call refetch; query will auto-update
   };
 
   const handleRowClick = (genre: string) => {
@@ -43,7 +44,7 @@ const ReleaseYearStatsView = () => {
 
   return (
     <div className="p-6 bg-white/10 rounded-lg shadow-lg text-white">
-      <h2 className="text-2xl font-bold mb-4">Release Year Statistics</h2>
+  <h2 className="text-2xl font-bold mb-4">Release Year Statistics</h2>
 
       <div className="flex items-center gap-4 mb-6">
         <div>
@@ -82,11 +83,32 @@ const ReleaseYearStatsView = () => {
           <table className="min-w-full divide-y divide-gray-700">
             <thead className="bg-gray-800">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Genre</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Game Count</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Avg. Price</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Highest Metascore</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Lowest Metascore</th>
+                {[
+                  { key: 'genre', label: 'Genre' },
+                  { key: 'count', label: 'Game Count' },
+                  { key: 'avgPrice', label: 'Avg. Price' },
+                  { key: 'highestMetascore', label: 'Highest Metascore' },
+                  { key: 'lowestMetascore', label: 'Lowest Metascore' },
+                ].map(col => (
+                  <th
+                    key={col.key}
+                    className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider cursor-pointer select-none"
+                    onClick={() => {
+                      if (sortColumn === col.key) {
+                        setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+                      } else {
+                        setSortColumn(col.key);
+                        setSortOrder('asc');
+                      }
+                      handleFetchStats();
+                    }}
+                  >
+                    {col.label}
+                    {sortColumn === col.key && (
+                      <span className="ml-1">{sortOrder === 'asc' ? '▲' : '▼'}</span>
+                    )}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody className="bg-gray-900 divide-y divide-gray-800">
