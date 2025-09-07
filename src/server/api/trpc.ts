@@ -8,10 +8,10 @@
  */
 
 import { initTRPC } from "@trpc/server";
-import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import superjson from "superjson";
 import { ZodError } from "zod";
-
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../pages/api/auth/[...nextauth]";
 import { db } from "~/server/db";
 import { log } from "~/server/logger";
 
@@ -23,37 +23,20 @@ import { log } from "~/server/logger";
  * These allow you to access things when processing a request, like the database, the session, etc.
  */
 
-interface CreateContextOptions {
-  // session: Session | null;
+
+type CreateContextOptions = {
+  session: any;
+};
+
+const createInnerTRPCContext = (opts: CreateContextOptions) => ({
+  db,
+  session: opts.session,
+});
+
+export async function createTRPCContext(opts: any) {
+  const session = await getServerSession(opts.req, opts.res, authOptions);
+  return createInnerTRPCContext({ session });
 }
-
-/**
- * This helper generates the "internals" for a tRPC context. If you need to use it, you can export
- * it from here.
- *
- * Examples of things you may need it for:
- * - testing, so we don't have to mock Next.js' req/res
- * - tRPC's `createSSGHelpers`, where we don't have req/res
- *
- * @see https://create.t3.gg/en/usage/trpc#-serverapitrpcts
- */
-const createInnerTRPCContext = (opts: CreateContextOptions) => {
-  return {
-    db,
-  };
-};
-
-/**
- * This is the actual context you will use in your router. It will be used to process every request
- * that goes through your tRPC endpoint.
- *
- * @see https://trpc.io/docs/context
- */
-
-export const createTRPCContext = async (opts: CreateNextContextOptions) => {
-  // No session context
-  return createInnerTRPCContext({});
-};
 
 /**
  * 2. INITIALIZATION
@@ -117,27 +100,35 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
 
   const end = Date.now();
   // Write log to file for Promtail/Loki
-  log(`[TRPC] ${path} took ${end - start}ms to execute`);
+  log(`[TRPC] ${path} took ${end - start}ms to execute`, {
+    path,
+    type: "query", // or "mutation"/"subscription" if available in this context
+    session: undefined, // session is not available here, set to undefined or pass if available
+  });
 
   return result;
 });
 
 /**
  * Public (unauthenticated) procedure
- *
- * This is the base piece you use to build new queries and mutations on your tRPC API. It does not
- * guarantee that a user querying is authorized, but you can still access user session data if they
- * are logged in.
  */
 export const publicProcedure = t.procedure.use(timingMiddleware);
 
 /**
  * Protected (authenticated) procedure
  *
- * If you want a query or mutation to ONLY be accessible to logged in users, use this. It verifies
- * the session is valid and guarantees `ctx.session.user` is not null.
- *
- * @see https://trpc.io/docs/procedures
+ * Use this for any query/mutation that should require authentication.
  */
 export const protectedProcedure = t.procedure
-  .use(timingMiddleware);
+  .use(timingMiddleware)
+  .use(async ({ ctx, next, path, type }) => {
+      log("[protectedProcedure] Details:", {
+      path,
+      type,
+      session: ctx.session,
+    });
+    if (!ctx.session || !ctx.session.user) {
+      throw new Error("Unauthorized");
+    }
+    return next({ ctx: { ...ctx, session: ctx.session } });
+  });

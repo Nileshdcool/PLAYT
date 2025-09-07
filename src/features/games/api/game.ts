@@ -4,7 +4,7 @@ import { gameService } from "~/features/games/services/gameService";
 
 export const gameRouter = createTRPCRouter({
   // Public endpoint (e.g., list games)
-  list: publicProcedure
+  list: protectedProcedure
     .input(z.object({
       page: z.number().min(1).default(1),
       limit: z.number().min(1).max(100).default(10),

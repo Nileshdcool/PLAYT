@@ -1,17 +1,22 @@
+
 import Head from "next/head";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { api } from "~/utils/api";
+import GrafanaEmbed from "../components/GrafanaEmbed";
+import GamePagination from "../features/games/components/GamePagination";
 import GameListHeader from "../features/games/components/GameListHeader";
 import GameList from "../features/games/components/GameList";
 import GameSearch from "../features/games/components/GameSearch";
 import AddGameModal from "../features/games/components/AddGameModal";
 import ReleaseYearStatsView from "../features/games/components/ReleaseYearStatsView";
-
-import { useState } from "react";
-import GrafanaEmbed from "../components/GrafanaEmbed";
-import GamePagination from "../features/games/components/GamePagination";
 import { toast } from "react-hot-toast";
+import { signOut } from "next-auth/react";
 
 export default function Home() {
+  const { status } = useSession();
+  const router = useRouter();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -19,10 +24,7 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<'allGames' | 'yearStats' | 'logs'>('allGames');
   const [sortColumn, setSortColumn] = useState('releaseDate');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
-
   const utils = api.useUtils();
-
-  // Fetch game list from tRPC with pagination and search
   const { data, isLoading, error } = api.game.list.useQuery({
     page,
     limit: pageSize,
@@ -30,34 +32,38 @@ export default function Home() {
     sortColumn,
     sortOrder,
   });
-
   const addGameMutation = api.game.add.useMutation({
     onSuccess: () => {
-      // Invalidate the game list query to refetch data
       utils.game.list.invalidate();
       setIsModalOpen(false);
       toast.success("Game added successfully!");
     },
-    onError: (error) => {
+    onError: (error: any) => {
       toast.error(`Error adding game: ${error.message}`);
     },
   });
-
   const handleAddGame = (game: any) => {
     addGameMutation.mutate(game);
   };
-
-  // Prepare games with releaseDate as string
-  const games = (data?.games ?? []).map((game) => ({
+  const games = (data?.games ?? []).map((game: any) => ({
     ...game,
     releaseDate:
       typeof game.releaseDate === "string"
         ? game.releaseDate
         : game.releaseDate?.toISOString?.() ?? ""
   }));
-
   const showPagination = !search;
-
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.replace("/login");
+    }
+  }, [status, router]);
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
+  if (status === "unauthenticated") {
+    return null;
+  }
   return (
     <>
       <Head>
@@ -67,6 +73,14 @@ export default function Home() {
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
+          <div className="w-full flex justify-end mb-4">
+            <button
+              onClick={() => signOut({ callbackUrl: "/login" })}
+              className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded shadow"
+            >
+              Logout
+            </button>
+          </div>
           <div className="flex justify-center w-full border-b border-gray-600">
             <button
               className={`px-6 py-3 text-lg font-medium transition-colors duration-300 ${activeTab === 'allGames' ? 'border-b-2 border-purple-500 text-white' : 'text-gray-400 hover:text-white'}`}

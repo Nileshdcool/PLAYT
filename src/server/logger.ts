@@ -9,7 +9,7 @@ if (!fs.existsSync(logDir)) {
 }
 const logFile = path.join(logDir, 'app.log');
 
-export function log(message: string) {
+export function log(message: string, p0: { path: string; type: "query" | "mutation" | "subscription"; session: any; }) {
   const timestamp = new Date().toISOString();
   fs.appendFileSync(logFile, `[${timestamp}] ${message}\n`);
 }

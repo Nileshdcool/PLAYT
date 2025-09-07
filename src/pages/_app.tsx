@@ -1,6 +1,8 @@
+
 import { type AppType } from "next/app";
 import { Toaster } from "react-hot-toast";
 import { Geist } from "next/font/google";
+import { SessionProvider } from "next-auth/react";
 
 import { api } from "~/utils/api";
 import { AppProvider } from "../AppContext";
@@ -13,12 +15,14 @@ const geist = Geist({
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
-    <AppProvider>
-      <Toaster position="bottom-center" />
-      <div className={geist.className}>
-        <Component {...pageProps} />
-      </div>
-    </AppProvider>
+    <SessionProvider session={(pageProps as any).session}>
+      <AppProvider>
+        <Toaster position="bottom-center" />
+        <div className={geist.className}>
+          <Component {...pageProps} />
+        </div>
+      </AppProvider>
+    </SessionProvider>
   );
 };
 
