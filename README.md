@@ -1,39 +1,120 @@
-# Create T3 App
+# PLAYT - Game Management Application
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+A modern web application for managing video game collections built with Next.js, tRPC, and MongoDB.
 
-## What's next? How do I make an app with this?
+## Project Overview
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+PLAYT is a full-stack application that allows users to manage and track video games. It features authentication, game management, and a responsive user interface built with modern web technologies.
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## Tech Stack
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+- **Frontend:**
+  - Next.js 15.2
+  - React 19
+  - TailwindCSS
+  - React Query (Tanstack Query)
 
-## Learn More
+- **Backend:**
+  - tRPC
+  - Prisma ORM
+  - MongoDB
+  - NextAuth.js
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+## Features
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+- User Authentication
+- Game Management (CRUD operations)
+- Game List with filtering and pagination
+- Responsive Design
+- MongoDB Integration
+- Type-safe API with tRPC
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+## Project Structure
 
-## How do I deploy this?
+```
+src/
+├── components/     # Reusable UI components
+├── features/      # Feature-based modules
+│   ├── auth/      # Authentication related code
+│   └── games/     # Game management features
+├── pages/         # Next.js pages
+├── server/        # Backend logic and API routes
+└── utils/         # Utility functions
+```
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+## Getting Started
 
+1. **Prerequisites**
+   - Node.js (v16 or higher)
+   - npm (v10 or higher)
+   - MongoDB instance
 
-## Useful commands
+2. **Environment Setup**
+   ```bash
+   # Create a .env file with the following variables
+   MONGODB_URI=your_mongodb_connection_string
+   ```
+
+3. **Installation**
+   ```bash
+   npm install
+   ```
+
+4. **Database Setup**
+   ```bash
+   npm run db:push     # Push the schema to database
+   npm run db:generate # Generate Prisma client
+   ```
+
+5. **Development**
+   ```bash
+   npm run dev        # Start development server
+   ```
+
+## Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+- `npm run format:write` - Format code with Prettier
+- `npm run db:studio` - Open Prisma Studio for database management
+- `npm run typecheck` - Run TypeScript type checking
+
+## Database Schema
+
+The application uses MongoDB with Prisma as the ORM. The main model is:
+
+```prisma
+model Game {
+    id           String   @id
+    title        String
+    genre        String
+    platform     String
+    releaseDate  DateTime
+    developer    String
+    price        Float
+    multiplayer  Boolean
+    metascore    Int
+}
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the terms found in the LICENSE file.
+
+# Handy scripts 
 
 npx prisma db push
 
 npx prisma db push
 npx prisma generate
 npx ts-node prisma/seed.ts
-
