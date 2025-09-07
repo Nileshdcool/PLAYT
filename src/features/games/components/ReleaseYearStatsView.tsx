@@ -12,12 +12,18 @@ const ReleaseYearStatsView = () => {
   const [sortColumn, setSortColumn] = useState<string>('genre');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
-  const { data, isLoading, error } = api.game.releaseYearStats.useQuery(
-    { startYear, endYear, sortColumn, sortOrder }
-  );
+  const {
+    data: statsResult,
+    isLoading,
+    error: statsError
+  } = api.game.releaseYearStats.useQuery({ startYear, endYear, sortColumn, sortOrder });
 
   // Drill-down query for games by genre and period
-  const drillQuery = api.game.listGamesByGenreAndPeriod.useQuery(
+  const {
+    data: drillResult,
+    isLoading: drillLoading,
+    error: drillError
+  } = api.game.listGamesByGenreAndPeriod.useQuery(
     {
       genre: expandedGenre ?? '',
       startYear,
@@ -75,10 +81,10 @@ const ReleaseYearStatsView = () => {
         </button>
       </div>
 
-      {isLoading && <p>Loading...</p>}
-      {error && <p className="text-red-400">Error: {error.message}</p>}
+  {isLoading && <p>Loading...</p>}
+  {statsError && <p className="text-red-400">Error: {statsError.message}</p>}
 
-      {data && (
+  {statsResult?.success && statsResult.data && (
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-700">
             <thead className="bg-gray-800">
@@ -112,7 +118,7 @@ const ReleaseYearStatsView = () => {
               </tr>
             </thead>
             <tbody className="bg-gray-900 divide-y divide-gray-800">
-              {data.map((stat) => (
+              {statsResult.data.map((stat: any) => (
                 <React.Fragment key={stat.genre}>
                   <tr
                     className="cursor-pointer hover:bg-purple-900/30"
@@ -127,9 +133,9 @@ const ReleaseYearStatsView = () => {
                   {expandedGenre === stat.genre && (
                     <tr>
                       <td colSpan={5} className="bg-gray-800 px-6 py-4">
-                        {drillQuery.isLoading && <p>Loading games...</p>}
-                        {drillQuery.error && <p className="text-red-400">Error: {drillQuery.error.message}</p>}
-                        {drillQuery.data && (
+                        {drillLoading && <p>Loading games...</p>}
+                        {drillError && <p className="text-red-400">Error: {drillError.message}</p>}
+                        {drillResult?.success && drillResult.data && (
                           <div>
                             <h3 className="text-lg font-semibold mb-2">Games in {stat.genre} ({startYear}-{endYear})</h3>
                             <table className="min-w-full mb-2">
@@ -144,7 +150,7 @@ const ReleaseYearStatsView = () => {
                                 </tr>
                               </thead>
                               <tbody>
-                                {drillQuery.data.games.map((game: any) => (
+                                {drillResult.data.games.map((game: any) => (
                                   <tr key={game.id}>
                                     <td className="px-2 py-1 whitespace-nowrap">{game.title}</td>
                                     <td className="px-2 py-1 whitespace-nowrap">{game.platform}</td>
@@ -157,19 +163,19 @@ const ReleaseYearStatsView = () => {
                               </tbody>
                             </table>
                             <div className="flex items-center justify-between mt-2">
-                              <span>Page {drillQuery.data.page} of {drillQuery.data.totalPages}</span>
+                              <span>Page {drillResult.data.page} of {drillResult.data.totalPages}</span>
                               <div>
                                 <button
                                   className="px-2 py-1 mr-2 bg-purple-600 rounded hover:bg-purple-700 disabled:opacity-50"
-                                  disabled={drillQuery.data.page === 1}
-                                  onClick={() => setDrillPage(drillQuery.data.page - 1)}
+                                  disabled={drillResult.data.page === 1}
+                                  onClick={() => setDrillPage(drillResult.data.page - 1)}
                                 >
                                   Prev
                                 </button>
                                 <button
                                   className="px-2 py-1 bg-purple-600 rounded hover:bg-purple-700 disabled:opacity-50"
-                                  disabled={drillQuery.data.page === drillQuery.data.totalPages}
-                                  onClick={() => setDrillPage(drillQuery.data.page + 1)}
+                                  disabled={drillResult.data.page === drillResult.data.totalPages}
+                                  onClick={() => setDrillPage(drillResult.data.page + 1)}
                                 >
                                   Next
                                 </button>

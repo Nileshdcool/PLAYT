@@ -12,7 +12,8 @@ export const gameRouter = createTRPCRouter({
       sortOrder: z.enum(["asc", "desc"]).optional(),
     }))
     .query(async ({ input }) => {
-      return gameService.listGames(input);
+      const result = await gameService.listGames(input);
+      return result;
     }),
 
   add: protectedProcedure
@@ -29,7 +30,8 @@ export const gameRouter = createTRPCRouter({
       metascore: z.number().int().min(0).max(100),
     }))
     .mutation(async ({ input }) => {
-      return gameService.addGame(input);
+      const result = await gameService.addGame(input);
+      return result;
     }),
     
   releaseYearStats: publicProcedure
@@ -40,7 +42,8 @@ export const gameRouter = createTRPCRouter({
       sortOrder: z.enum(["asc", "desc"]).optional(),
     }))
     .query(async ({ input }) => {
-      return gameService.getReleaseYearStats(input);
+      const result = await gameService.getReleaseYearStats(input);
+      return result;
     }),
 
   listGamesByGenreAndPeriod: publicProcedure
@@ -54,6 +57,7 @@ export const gameRouter = createTRPCRouter({
       sortOrder: z.enum(["asc", "desc"]).optional(),
     }))
     .query(async ({ input }) => {
-      return gameService.listGamesByGenreAndPeriod(input);
+      const result = await gameService.listGamesByGenreAndPeriod(input);
+      return result;
     }),
 });

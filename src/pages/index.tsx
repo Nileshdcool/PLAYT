@@ -25,7 +25,11 @@ export default function Home() {
   const [sortColumn, setSortColumn] = useState('releaseDate');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const utils = api.useUtils();
-  const { data, isLoading, error } = api.game.list.useQuery({
+  const {
+    data: listResult,
+    isLoading,
+    error: listError
+  } = api.game.list.useQuery({
     page,
     limit: pageSize,
     search: search || undefined,
@@ -33,10 +37,14 @@ export default function Home() {
     sortOrder,
   });
   const addGameMutation = api.game.add.useMutation({
-    onSuccess: () => {
-      utils.game.list.invalidate();
-      setIsModalOpen(false);
-      toast.success("Game added successfully!");
+    onSuccess: (result) => {
+      if (result?.success) {
+        utils.game.list.invalidate();
+        setIsModalOpen(false);
+        toast.success("Game added successfully!");
+      } else {
+        toast.error(result?.error?.message || "Error adding game");
+      }
     },
     onError: (error: any) => {
       toast.error(`Error adding game: ${error.message}`);
@@ -45,7 +53,7 @@ export default function Home() {
   const handleAddGame = (game: any) => {
     addGameMutation.mutate(game);
   };
-  const games = (data?.games ?? []).map((game: any) => ({
+  const games = (listResult?.success && listResult.data?.games ? listResult.data.games : []).map((game: any) => ({
     ...game,
     releaseDate:
       typeof game.releaseDate === "string"
@@ -117,14 +125,14 @@ export default function Home() {
               <GameList
                 games={games}
                 isLoading={isLoading}
-                error={error}
+                error={listError}
               />
               <GameListControls
                 pageSize={pageSize}
                 onPageSizeChange={(size: number) => { setPageSize(size); setPage(1); }}
                 showPagination={showPagination}
-                page={data?.page ?? 1}
-                totalPages={data?.totalPages ?? 1}
+                page={listResult?.success && listResult.data?.page ? listResult.data.page : 1}
+                totalPages={listResult?.success && listResult.data?.totalPages ? listResult.data.totalPages : 1}
                 onPageChange={setPage}
               />
             </>
