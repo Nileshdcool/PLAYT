@@ -140,7 +140,7 @@ export default function Home() {
           {activeTab === 'yearStats' && <ReleaseYearStatsView />}
           {activeTab === 'logs' && (
             <GrafanaEmbed
-              dashboardUrl="http://localhost:3001/explore?orgId=1&left=%7B%22datasource%22%3A%22Loki%22%2C%22expr%22%3A%22%7Bjob%3D%5C%22app%5C%22%7D%22%7D"
+              dashboardUrl="http://localhost:3001/d/e1cd44b2-64dd-4a81-bba7-27c0f7a158aa/playtastic?orgId=1&from=now-1h&to=now&timezone=browser"
               width="100%"
               height="600px"
             />
