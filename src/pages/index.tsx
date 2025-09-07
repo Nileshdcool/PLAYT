@@ -43,7 +43,7 @@ export default function Home() {
         setIsModalOpen(false);
         toast.success("Game added successfully!");
       } else {
-        toast.error(result?.error?.message || "Error adding game");
+        toast.error("Error adding game");
       }
     },
     onError: (error: any) => {
