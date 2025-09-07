@@ -58,12 +58,15 @@ src/
 3. **Installation**
    ```bash
    npm install
+   # If using Docker, start services with:
+   docker-compose up -d
    ```
 
 4. **Database Setup**
    ```bash
    npm run db:push     # Push the schema to database
    npm run db:generate # Generate Prisma client
+   npx ts-node prisma/seed.js
    ```
 
 5. **Development**
@@ -117,4 +120,4 @@ npx prisma db push
 
 npx prisma db push
 npx prisma generate
-npx ts-node prisma/seed.ts
+npx ts-node prisma/seed.js
