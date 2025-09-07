@@ -1,5 +1,6 @@
-import { signIn, useSession } from "next-auth/react";
+import { signIn, useSession, getSession } from "next-auth/react";
 import { useState, useEffect } from "react";
+import { setApiToken } from "../utils/api";
 import { useRouter } from "next/router";
 
 export default function LoginPage() {
@@ -16,7 +17,23 @@ export default function LoginPage() {
       username,
       password
     });
-    if (res?.error) setError("Invalid username or password");
+    if (res?.error) {
+      setError("Invalid username or password");
+    } else {
+      // Wait for session to update, then set token
+      setTimeout(async () => {
+        const session = await getSession();
+        // NextAuth stores the JWT in session.data (for credentials provider)
+        // If using credentials, you may need to fetch it from session.data or session.accessToken
+        const jwtToken = (session as any)?.accessToken;
+        if (jwtToken && typeof jwtToken === "string") {
+          setApiToken(jwtToken);
+          console.log("JWT token set in localStorage:", jwtToken);
+        } else {
+          console.warn("No JWT token found in session after login.", session);
+        }
+      }, 500);
+    }
   };
 
   useEffect(() => {

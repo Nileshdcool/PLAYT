@@ -33,13 +33,20 @@ export const api = createTRPCNext<AppRouter>({
             (opts.direction === "down" && opts.result instanceof Error),
         }),
         httpBatchLink({
-          /**
-           * Transformer used for data de-serialization from the server.
-           *
-           * @see https://trpc.io/docs/data-transformers
-           */
           transformer: superjson,
           url: `${getBaseUrl()}/api/trpc`,
+          headers() {
+            if (typeof window !== "undefined") {
+              const token = localStorage.getItem("token");
+              if (token) {
+                console.log("Sending Authorization header:", `Bearer ${token}`);
+                return { Authorization: `Bearer ${token}` };
+              } else {
+                console.warn("No token found in localStorage for Authorization header.");
+              }
+            }
+            return {};
+          },
         }),
       ],
     };
@@ -66,3 +73,13 @@ export type RouterInputs = inferRouterInputs<AppRouter>;
  * @example type HelloOutput = RouterOutputs['example']['hello']
  */
 export type RouterOutputs = inferRouterOutputs<AppRouter>;
+
+/**
+ * Helper to set JWT token for API requests.
+ * Call setApiToken(token) after login.
+ */
+export function setApiToken(token: string) {
+  if (typeof window !== "undefined") {
+    localStorage.setItem("token", token);
+  }
+}

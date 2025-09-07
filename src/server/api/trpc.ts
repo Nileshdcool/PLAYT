@@ -12,6 +12,7 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../pages/api/auth/[...nextauth]";
+import jwt from "jsonwebtoken";
 import { db } from "~/server/db";
 import { log } from "~/server/logger";
 
@@ -33,8 +34,24 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => ({
   session: opts.session,
 });
 
-export async function createTRPCContext(opts: any) {
-  const session = await getServerSession(opts.req, opts.res, authOptions);
+export async function createTRPCContext(opts: { req: any; res: any }) {
+  let session = null;
+  const authHeader = opts.req.headers["authorization"] || opts.req.headers["Authorization"];
+  if (authHeader && typeof authHeader === "string" && authHeader.startsWith("Bearer ")) {
+    const token = authHeader.slice(7);
+    try {
+      // Use your NextAuth secret here
+      const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET || "");
+      // NextAuth JWT payload usually contains user info
+      session = { user: decoded };
+      console.log("JWT validated, session:", session);
+    } catch (err) {
+      console.warn("JWT validation failed:", err);
+      session = null;
+    }
+  } else {
+    session = await getServerSession(opts.req, opts.res, authOptions);
+  }
   return createInnerTRPCContext({ session });
 }
 
@@ -46,7 +63,7 @@ export async function createTRPCContext(opts: any) {
  * errors on the backend.
  */
 
-const t = initTRPC.context<typeof createTRPCContext>().create({
+const t = initTRPC.context<typeof createInnerTRPCContext>().create({
   transformer: superjson,
   errorFormatter({ shape, error }) {
     return {
