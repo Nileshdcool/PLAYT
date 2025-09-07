@@ -67,14 +67,17 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Game Dashboard</title>
-        <meta name="description" content="Game list and stats app" />
-        <link rel="icon" href="/favicon.ico" />
+        <title>PLAYTASTIC</title>
+        <meta name="description" content="PLAYTASTIC - Game list and stats app" />
+        <link rel="icon" href="/playtastic-logo.svg" />
       </Head>
       <main className="flex min-h-screen flex-col items-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
         {/* Header */}
         <header className="w-full max-w-4xl mx-auto flex items-center justify-between py-4 px-6 bg-[#1a1740] rounded-b-lg shadow-lg mb-2">
-          <h1 className="text-2xl font-bold tracking-tight">Game Dashboard</h1>
+          <div className="flex items-center gap-3">
+            <img src="/playtastic-logo.svg" alt="PLAYTASTIC Logo" className="h-10 w-10" />
+            <h1 className="text-3xl font-extrabold tracking-tight text-white">PLAYTASTIC</h1>
+          </div>
           <button
             onClick={() => signOut({ callbackUrl: "/login" })}
             className="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded shadow"

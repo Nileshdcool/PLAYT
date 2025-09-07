@@ -44,34 +44,43 @@ export default function LoginPage() {
   }, [status, router]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-      <div className="bg-white/10 rounded-lg shadow-lg p-8 w-full max-w-sm">
-        <h2 className="text-2xl font-bold mb-6 text-center text-white">Login</h2>
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <TextInput
-            label="Username"
-            value={username}
-            onChange={setUsername}
-            required
-            placeholder="Enter your username"
-          />
-          <TextInput
-            label="Password"
-            type="password"
-            value={password}
-            onChange={setPassword}
-            required
-            placeholder="Enter your password"
-          />
-          {error && <div className="text-red-500 text-sm text-center">{error}</div>}
-          <button
-            type="submit"
-            className="w-full py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded transition-colors"
-          >
-            Login
-          </button>
-        </form>
+    <>
+      <head>
+        <title>PLAYTASTIC Login</title>
+        <meta name="description" content="Login to PLAYTASTIC" />
+        <link rel="icon" href="/playtastic-logo.svg" />
+      </head>
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-[#2e026d] to-[#15162c]">
+        <div className="bg-white/10 rounded-lg shadow-lg p-8 w-full max-w-sm flex flex-col items-center">
+          <img src="/playtastic-logo.svg" alt="PLAYTASTIC Logo" className="h-16 w-16 mb-3" />
+          <h1 className="text-3xl font-extrabold mb-2 text-center text-white">PLAYTASTIC</h1>
+          <h2 className="text-2xl font-bold mb-6 text-center text-white">Login</h2>
+          <form onSubmit={handleSubmit} className="space-y-5 w-full">
+            <TextInput
+              label="Username"
+              value={username}
+              onChange={setUsername}
+              required
+              placeholder="Enter your username"
+            />
+            <TextInput
+              label="Password"
+              type="password"
+              value={password}
+              onChange={setPassword}
+              required
+              placeholder="Enter your password"
+            />
+            {error && <div className="text-red-500 text-sm text-center">{error}</div>}
+            <button
+              type="submit"
+              className="w-full py-2 px-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded transition-colors"
+            >
+              Login
+            </button>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

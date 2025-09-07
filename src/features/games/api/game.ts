@@ -3,7 +3,6 @@ import { z } from "zod";
 import { gameService } from "~/features/games/services/gameService";
 
 export const gameRouter = createTRPCRouter({
-  // Public endpoint (e.g., list games)
   list: protectedProcedure
     .input(z.object({
       page: z.number().min(1).default(1),
@@ -16,7 +15,6 @@ export const gameRouter = createTRPCRouter({
       return gameService.listGames(input);
     }),
 
-  // Protected endpoint (e.g., add a game)
   add: protectedProcedure
     .input(z.object({
       title: z.string(),
@@ -24,7 +22,7 @@ export const gameRouter = createTRPCRouter({
       platform: z.string(),
       releaseDate: z.string().refine((val) => !isNaN(Date.parse(val)), {
         message: "Invalid date format",
-      }), // ISO date string
+      }),
       developer: z.string(),
       price: z.number().min(0),
       multiplayer: z.boolean(),
@@ -34,7 +32,6 @@ export const gameRouter = createTRPCRouter({
       return gameService.addGame(input);
     }),
     
-  // Public endpoint: release year range stats
   releaseYearStats: publicProcedure
     .input(z.object({
       startYear: z.number().int().min(1970),
@@ -44,7 +41,6 @@ export const gameRouter = createTRPCRouter({
       return gameService.getReleaseYearStats(input);
     }),
 
-  // Public endpoint: list games by genre and period (for drill-down)
   listGamesByGenreAndPeriod: publicProcedure
     .input(z.object({
       genre: z.string(),
