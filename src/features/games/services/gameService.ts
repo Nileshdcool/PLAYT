@@ -3,6 +3,8 @@ import { z } from "zod";
 import type { Game, Prisma } from "@prisma/client";
 import { db } from "~/server/db";
 import { DbService } from "~/server/DbService";
+import { log } from "~/server/logger";
+import { AppError, ValidationError } from "~/server/errors";
 
 // Define input schemas for service layer
 const ListGamesInput = z.object({
@@ -85,13 +87,8 @@ export const gameService = {
         },
       };
     } catch (error: any) {
-      return {
-        success: false,
-        error: {
-          code: 'LIST_GAMES_ERROR',
-          message: error?.message || 'Failed to list games',
-        },
-      };
+      log('gameService.listGames error', { error, args: input }, 'error');
+      throw new AppError(error?.message || 'Failed to list games', 'LIST_GAMES_ERROR', 500, error);
     }
   },
 
@@ -108,13 +105,8 @@ export const gameService = {
         data: game,
       };
     } catch (error: any) {
-      return {
-        success: false,
-        error: {
-          code: 'ADD_GAME_ERROR',
-          message: error?.message || 'Failed to add game',
-        },
-      };
+      log('gameService.addGame error', { error, args: input }, 'error');
+      throw new ValidationError(error?.message || 'Failed to add game', error);
     }
   },
 
@@ -184,13 +176,8 @@ export const gameService = {
         data: result,
       };
     } catch (error: any) {
-      return {
-        success: false,
-        error: {
-          code: 'RELEASE_YEAR_STATS_ERROR',
-          message: error?.message || 'Failed to get release year stats',
-        },
-      };
+      log('gameService.getReleaseYearStats error', { error, args: input }, 'error');
+      throw new AppError(error?.message || 'Failed to get release year stats', 'RELEASE_YEAR_STATS_ERROR', 500, error);
     }
   },
 
@@ -233,13 +220,8 @@ export const gameService = {
         },
       };
     } catch (error: any) {
-      return {
-        success: false,
-        error: {
-          code: 'LIST_GAMES_BY_GENRE_PERIOD_ERROR',
-          message: error?.message || 'Failed to list games by genre and period',
-        },
-      };
+      log('gameService.listGamesByGenreAndPeriod error', { error, args: input }, 'error');
+      throw new AppError(error?.message || 'Failed to list games by genre and period', 'LIST_GAMES_BY_GENRE_PERIOD_ERROR', 500, error);
     }
   },
 };

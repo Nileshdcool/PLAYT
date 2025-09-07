@@ -7,6 +7,7 @@
  * need to use are documented accordingly near the end.
  */
 
+
 import { initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
@@ -15,6 +16,7 @@ import { authOptions } from "../../pages/api/auth/[...nextauth]";
 import jwt from "jsonwebtoken";
 import { db } from "~/server/db";
 import { log } from "~/server/logger";
+import { AppError, AuthError, ValidationError } from "~/server/errors";
 
 /**
  * 1. CONTEXT
@@ -66,12 +68,24 @@ export async function createTRPCContext(opts: { req: any; res: any }) {
 const t = initTRPC.context<typeof createInnerTRPCContext>().create({
   transformer: superjson,
   errorFormatter({ shape, error }) {
+    // Log error with structured context
+    log('tRPC error', {
+      error: error,
+      path: shape.message,
+      args: error?.stack,
+    }, 'error');
     return {
       ...shape,
       data: {
         ...shape.data,
         zodError:
           error.cause instanceof ZodError ? error.cause.flatten() : null,
+        appError:
+          error instanceof AppError ? {
+            code: error.code,
+            status: error.status,
+            details: error.details,
+          } : null,
       },
     };
   },
