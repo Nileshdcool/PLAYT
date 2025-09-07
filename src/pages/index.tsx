@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { api } from "~/utils/api";
 import GrafanaEmbed from "../components/GrafanaEmbed";
 import GameListControls from "../features/games/components/GameListControls";
-import GamePagination from "../features/games/components/GamePagination";
 import GameListHeader from "../features/games/components/GameListHeader";
 import GameList from "../features/games/components/GameList";
 import GameSearch from "../features/games/components/GameSearch";
@@ -72,67 +71,70 @@ export default function Home() {
         <meta name="description" content="Game list and stats app" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
-          <div className="w-full flex justify-end mb-4">
-            <button
-              onClick={() => signOut({ callbackUrl: "/login" })}
-              className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded shadow"
-            >
-              Logout
-            </button>
-          </div>
-          <div className="flex justify-center w-full border-b border-gray-600">
-            <button
-              className={`px-6 py-3 text-lg font-medium transition-colors duration-300 ${activeTab === 'allGames' ? 'border-b-2 border-purple-500 text-white' : 'text-gray-400 hover:text-white'}`}
-              onClick={() => setActiveTab('allGames')}
-            >All Games</button>
-            <button
-              className={`px-6 py-3 text-lg font-medium transition-colors duration-300 ${activeTab === 'yearStats' ? 'border-b-2 border-purple-500 text-white' : 'text-gray-400 hover:text-white'}`}
-              onClick={() => setActiveTab('yearStats')}
-            >Release Year Stats</button>
-            <button
-              className={`px-6 py-3 text-lg font-medium transition-colors duration-300 ${activeTab === 'logs' ? 'border-b-2 border-purple-500 text-white' : 'text-gray-400 hover:text-white'}`}
-              onClick={() => setActiveTab('logs')}
-            >Logs</button>
-          </div>
-
-          <div className="w-full max-w-4xl">
-            {activeTab === 'allGames' && (
-              <>
-                <GameListHeader
-                  onAddGame={() => setIsModalOpen(true)}
-                  sortColumn={sortColumn}
-                  sortOrder={sortOrder}
-                  onSortColumnChange={setSortColumn}
-                  onSortOrderChange={setSortOrder}
-                />
-                <GameSearch value={search} onChange={setSearch} />
-                <GameList
-                  games={games}
-                  isLoading={isLoading}
-                  error={error}
-                />
-                <GameListControls
-                  pageSize={pageSize}
-                  onPageSizeChange={(size: number) => { setPageSize(size); setPage(1); }}
-                  showPagination={showPagination}
-                  page={data?.page ?? 1}
-                  totalPages={data?.totalPages ?? 1}
-                  onPageChange={setPage}
-                />
-              </>
-            )}
-            {activeTab === 'yearStats' && <ReleaseYearStatsView />}
-            {activeTab === 'logs' && (
-              <GrafanaEmbed
-                dashboardUrl="http://localhost:3001/explore?orgId=1&left=%7B%22datasource%22%3A%22Loki%22%2C%22expr%22%3A%22%7Bjob%3D%5C%22app%5C%22%7D%22%7D"
-                width="100%"
-                height="800px"
+      <main className="flex min-h-screen flex-col items-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
+        {/* Header */}
+        <header className="w-full max-w-4xl mx-auto flex items-center justify-between py-4 px-6 bg-[#1a1740] rounded-b-lg shadow-lg mb-2">
+          <h1 className="text-2xl font-bold tracking-tight">Game Dashboard</h1>
+          <button
+            onClick={() => signOut({ callbackUrl: "/login" })}
+            className="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded shadow"
+          >
+            Logout
+          </button>
+        </header>
+        {/* Tabs */}
+        <nav className="w-full max-w-4xl mx-auto flex justify-center border-b border-gray-700 mb-4">
+          <button
+            className={`px-4 py-2 text-base font-medium transition-colors duration-300 ${activeTab === 'allGames' ? 'border-b-2 border-purple-500 text-white' : 'text-gray-400 hover:text-white'}`}
+            onClick={() => setActiveTab('allGames')}
+          >All Games</button>
+          <button
+            className={`px-4 py-2 text-base font-medium transition-colors duration-300 ${activeTab === 'yearStats' ? 'border-b-2 border-purple-500 text-white' : 'text-gray-400 hover:text-white'}`}
+            onClick={() => setActiveTab('yearStats')}
+          >Release Year Stats</button>
+          <button
+            className={`px-4 py-2 text-base font-medium transition-colors duration-300 ${activeTab === 'logs' ? 'border-b-2 border-purple-500 text-white' : 'text-gray-400 hover:text-white'}`}
+            onClick={() => setActiveTab('logs')}
+          >Logs</button>
+        </nav>
+        {/* Main Content */}
+        <section className="w-full max-w-4xl mx-auto bg-[#211a3a] rounded-lg shadow p-6 flex flex-col gap-6">
+          {activeTab === 'allGames' && (
+            <>
+              <GameListHeader
+                onAddGame={() => setIsModalOpen(true)}
+                sortColumn={sortColumn}
+                sortOrder={sortOrder}
+                onSortColumnChange={setSortColumn}
+                onSortOrderChange={setSortOrder}
               />
-            )}
-          </div>
-        </div>
+              <div className="flex flex-col md:flex-row md:items-center gap-2 mb-2">
+                <GameSearch value={search} onChange={setSearch} />
+              </div>
+              <GameList
+                games={games}
+                isLoading={isLoading}
+                error={error}
+              />
+              <GameListControls
+                pageSize={pageSize}
+                onPageSizeChange={(size: number) => { setPageSize(size); setPage(1); }}
+                showPagination={showPagination}
+                page={data?.page ?? 1}
+                totalPages={data?.totalPages ?? 1}
+                onPageChange={setPage}
+              />
+            </>
+          )}
+          {activeTab === 'yearStats' && <ReleaseYearStatsView />}
+          {activeTab === 'logs' && (
+            <GrafanaEmbed
+              dashboardUrl="http://localhost:3001/explore?orgId=1&left=%7B%22datasource%22%3A%22Loki%22%2C%22expr%22%3A%22%7Bjob%3D%5C%22app%5C%22%7D%22%7D"
+              width="100%"
+              height="600px"
+            />
+          )}
+        </section>
         <AddGameModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
