@@ -1,4 +1,23 @@
 import React, { useState } from 'react';
+// Helper to format Zod and other errors
+function formatErrorMessage(error: any): string {
+  // Zod validation error from tRPC
+  if (error && error.data && error.data.zodError && error.data.zodError.fieldErrors) {
+    const fieldErrors = error.data.zodError.fieldErrors as Record<string, string[]>;
+    return Object.entries(fieldErrors)
+      .map(([field, messages]) =>
+        Array.isArray(messages) && messages.length ? `${field}: ${messages.join(', ')}` : ''
+      )
+      .filter(Boolean)
+      .join(' | ');
+  }
+  // AppError from backend
+  if (error && error.data && error.data.appError && error.data.appError.message) {
+    return error.data.appError.message;
+  }
+  // Fallback to error.message
+  return error && error.message ? error.message : 'An unexpected error occurred.';
+}
 import { api } from '~/utils/api';
 // No skipToken import needed for this tRPC version
 
@@ -82,7 +101,11 @@ const ReleaseYearStatsView = () => {
       </div>
 
   {isLoading && <p>Loading...</p>}
-  {statsError && <p className="text-red-400">Error: {statsError.message}</p>}
+  {statsError && (
+    <p className="text-red-400">
+      Error: {formatErrorMessage(statsError)}
+    </p>
+  )}
 
   {statsResult?.success && statsResult.data && (
         <div className="overflow-x-auto">
@@ -134,7 +157,11 @@ const ReleaseYearStatsView = () => {
                     <tr>
                       <td colSpan={5} className="bg-gray-800 px-6 py-4">
                         {drillLoading && <p>Loading games...</p>}
-                        {drillError && <p className="text-red-400">Error: {drillError.message}</p>}
+                        {drillError && (
+                          <p className="text-red-400">
+                            Error: {formatErrorMessage(drillError)}
+                          </p>
+                        )}
                         {drillResult?.success && drillResult.data && (
                           <div>
                             <h3 className="text-lg font-semibold mb-2">Games in {stat.genre} ({startYear}-{endYear})</h3>
