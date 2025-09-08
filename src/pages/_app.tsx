@@ -5,10 +5,10 @@ import { Inter } from "next/font/google";
 import { SessionProvider } from "next-auth/react";
 import Head from "next/head";
 
-import { api } from "~/utils/api";
+import { api } from "../utils/api";
 import { AppProvider } from "../AppContext";
 
-import "~/styles/globals.css";
+import "../styles/globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 

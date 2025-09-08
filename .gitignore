@@ -47,3 +47,4 @@ yarn-error.log*
 /logs
 /loki
 /wal
+/.next-old

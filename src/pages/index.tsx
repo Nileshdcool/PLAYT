@@ -3,7 +3,7 @@ import Head from "next/head";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { api } from "~/utils/api";
+import { api } from "../utils/api";
 import GrafanaEmbed from "../components/GrafanaEmbed";
 import GameListControls from "../features/games/components/GameListControls";
 import GameListHeader from "../features/games/components/GameListHeader";

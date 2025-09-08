@@ -1,6 +1,6 @@
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../../../server/api/trpc";
 import { z } from "zod";
-import { gameService } from "~/features/games/services/gameService";
+import { gameService } from "../../../features/games/services/gameService";
 
 export const gameRouter = createTRPCRouter({
   list: protectedProcedure
