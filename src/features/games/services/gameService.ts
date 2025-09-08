@@ -1,10 +1,10 @@
 
 import { z } from "zod";
 import type { Game, Prisma } from "@prisma/client";
-import { db } from "~/server/db";
-import { DbService } from "~/server/DbService";
-import { log } from "~/server/logger";
-import { AppError, ValidationError } from "~/server/errors";
+import { db } from "../../../server/db";
+import { DbService } from "../../../server/DbService";
+import { log } from "../../../server/logger";
+import { AppError, ValidationError } from "../../../server/errors";
 
 // Define input schemas for service layer
 const ListGamesInput = z.object({

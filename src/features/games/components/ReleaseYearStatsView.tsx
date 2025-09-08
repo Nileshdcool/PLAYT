@@ -18,7 +18,7 @@ function formatErrorMessage(error: any): string {
   // Fallback to error.message
   return error && error.message ? error.message : 'An unexpected error occurred.';
 }
-import { api } from '~/utils/api';
+import { api } from '../../../utils/api';
 // No skipToken import needed for this tRPC version
 
 

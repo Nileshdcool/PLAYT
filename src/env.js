@@ -10,7 +10,7 @@ export const env = createEnv({
     // AUTH_SECRET: z.string(),
     // AUTH_GITHUB_ID: z.string(),
     // AUTH_GITHUB_SECRET: z.string(),
-    DATABASE_URL: z.string().url(),
+    MONGODB_URI: z.string().url(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
@@ -33,7 +33,7 @@ export const env = createEnv({
   // AUTH_SECRET: process.env.NEXTAUTH_SECRET,
   // AUTH_GITHUB_ID: process.env.AUTH_GITHUB_ID,
   // AUTH_GITHUB_SECRET: process.env.AUTH_GITHUB_SECRET,
-    DATABASE_URL: process.env.MONGODB_URI,
+    MONGODB_URI: process.env.MONGODB_URI,
     NODE_ENV: process.env.NODE_ENV,
   },
   /**
