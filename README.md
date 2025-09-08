@@ -2,6 +2,26 @@
 
 A modern web application for managing video game collections built with Next.js, tRPC, and MongoDB.
 
+## App Screenshots
+
+Here are some screenshots to give you a quick glance at the PLAYT app:
+
+<table>
+   <tr>
+      <td align="center">
+         <img src="public/Screenshot%202025-09-08%20155304.png" alt="Screenshot 1" width="300" />
+         <br />Screenshot 1
+      </td>
+      <td align="center">
+         <img src="public/Screenshot%202025-09-08%20155342.png" alt="Screenshot 2" width="300" />
+         <br />Screenshot 2
+      </td>
+      <td align="center">
+         <img src="public/Screenshot%202025-09-08%20155356.png" alt="Screenshot 3" width="300" />
+         <br />Screenshot 3
+      </td>
+   </tr>
+</table>
 ## Project Overview
 
 PLAYT is a full-stack application that allows users to manage and track video games. It features authentication, game management, and a responsive user interface built with modern web technologies.
@@ -121,3 +141,13 @@ npx prisma db push
 npx prisma db push
 npx prisma generate
 npx ts-node prisma/seed.js
+
+## App Screenshots
+
+Here are some screenshots to give you a quick glance at the PLAYT app:
+
+<div align="center">
+   <img src="public/Screenshot%202025-09-08%20155304.png" alt="Screenshot 1" width="600" style="margin: 10px; border-radius: 8px;" />
+   <img src="public/Screenshot%202025-09-08%20155342.png" alt="Screenshot 2" width="600" style="margin: 10px; border-radius: 8px;" />
+   <img src="public/Screenshot%202025-09-08%20155356.png" alt="Screenshot 3" width="600" style="margin: 10px; border-radius: 8px;" />
+</div>
