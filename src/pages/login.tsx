@@ -2,6 +2,7 @@ import { signIn, useSession, getSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { setApiToken } from "../utils/api";
 import { useRouter } from "next/router";
+import Head from "next/head";
 import LoginHeader from "../features/auth/components/LoginHeader";
 import LoginForm from "../features/auth/components/LoginForm";
 import LoginBackground from "../features/auth/components/LoginBackground";
@@ -47,11 +48,11 @@ export default function LoginPage() {
 
   return (
     <>
-      <head>
+      <Head>
         <title>PLAYTASTIC Login</title>
         <meta name="description" content="Login to PLAYTASTIC" />
         <link rel="icon" href="/playtastic-logo.svg" />
-      </head>
+      </Head>
       <div className="relative flex items-center justify-center min-h-screen bg-gradient-to-b from-[#2e026d] to-[#15162c] overflow-hidden">
         <LoginBackground />
         <div className="relative z-10 bg-white/10 rounded-lg shadow-lg p-8 w-full max-w-sm flex flex-col items-center border-2 border-purple-600 animate-glow">

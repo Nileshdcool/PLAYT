@@ -1,5 +1,5 @@
 
-import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
+import { createCallerFactory, createTRPCRouter } from "../../server/api/trpc";
 import { gameRouter } from "../../features/games/api/game";
 
 export const appRouter = createTRPCRouter({

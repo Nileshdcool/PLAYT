@@ -44,6 +44,6 @@ yarn-error.log*
 
 # idea files
 .idea
-/logs
 /loki
 /wal
+/.next-old

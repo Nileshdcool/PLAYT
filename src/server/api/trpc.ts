@@ -14,9 +14,9 @@ import { ZodError } from "zod";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../pages/api/auth/[...nextauth]";
 import jwt from "jsonwebtoken";
-import { db } from "~/server/db";
-import { log } from "~/server/logger";
-import { AppError, AuthError, ValidationError } from "~/server/errors";
+import { db } from "../../server/db";
+import { log } from "../../server/logger";
+import { AppError, AuthError, ValidationError } from "../../server/errors";
 
 /**
  * 1. CONTEXT
